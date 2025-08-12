@@ -3,8 +3,22 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 
+interface LoanData {
+  type: 'taken' | 'given';
+  principalAmount: number;
+  interestRate: number;
+  startDate: string;
+  endDate: string;
+  monthsRemaining: number;
+  goldQuantity: number;
+  goldPurity: number;
+  lenderName: string;
+  borrowerName: string;
+  description: string;
+}
+
 interface LoanFormProps {
-  onSubmit: (loanData: any) => void;
+  onSubmit: (loanData:LoanData) => void;
   onCancel: () => void;
 }
 

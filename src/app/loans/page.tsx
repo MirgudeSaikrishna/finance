@@ -24,6 +24,20 @@ interface Loan {
   createdAt: string;
 }
 
+interface LoanData {
+  type: 'taken' | 'given';
+  principalAmount: number;
+  interestRate: number;
+  startDate: string;
+  endDate: string;
+  monthsRemaining: number;
+  goldQuantity: number;
+  goldPurity: number;
+  lenderName: string;
+  borrowerName: string;
+  description: string;
+}
+
 export default function LoansPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -97,7 +111,7 @@ export default function LoansPage() {
     setFilteredLoans(filtered);
   };
 
-  const handleAddLoan = async (loanData: any) => {
+  const handleAddLoan = async (loanData: LoanData) => {
     try {
       const response = await fetch('/api/loans', {
         method: 'POST',

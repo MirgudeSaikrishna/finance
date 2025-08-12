@@ -21,7 +21,7 @@ export async function GET() {
     loansGiven.forEach(loan => {
       if (loan.status === 'active') {
         activeLoansGiven++;
-        const monthsElapsed = Math.floor((Date.now() - new Date(loan.startDate).getTime()) / (1000 * 60 * 60 * 24 * 30));
+        const monthsElapsed = Math.abs(Math.floor((Date.now() - new Date(loan.startDate).getTime()) / (1000 * 60 * 60 * 24 * 30)));
         const monthlyInterestRate = loan.interestRate / 100 / 12;
         const interestEarned = loan.principalAmount * monthlyInterestRate * monthsElapsed;
         totalIncomeFromGiven += interestEarned;
@@ -33,7 +33,7 @@ export async function GET() {
     loansTaken.forEach(loan => {
       if (loan.status === 'active') {
         activeLoansTaken++;
-        const monthsElapsed = Math.floor((Date.now() - new Date(loan.startDate).getTime()) / (1000 * 60 * 60 * 24 * 30));
+        const monthsElapsed = Math.abs(Math.floor((Date.now() - new Date(loan.startDate).getTime()) / (1000 * 60 * 60 * 24 * 30)));
         const monthlyInterestRate = loan.interestRate / 100 / 12;
         const interestPaid = loan.principalAmount * monthlyInterestRate * monthsElapsed;
         totalExpenseFromTaken += interestPaid;
@@ -51,7 +51,11 @@ export async function GET() {
     const avgInterestRateTaken = loansTaken.length > 0 
       ? loansTaken.reduce((sum, loan) => sum + loan.interestRate, 0) / loansTaken.length 
       : 0;
-    
+    const monthlypnl = loans.reduce((sum, loan) => {
+      const monthlyInterestRate = loan.interestRate / 100 / 12;
+      const interest = loan.principalAmount * monthlyInterestRate;
+      return sum + (loan.type === 'given' ? interest : -interest);
+    }, 0);
     const analytics = {
       summary: {
         totalLoans: loans.length,
@@ -59,7 +63,8 @@ export async function GET() {
         activeLoansGiven,
         netProfitLoss,
         totalIncomeFromGiven,
-        totalExpenseFromTaken
+        totalExpenseFromTaken,
+        monthlypnl
       },
       goldSummary: {
         totalGoldQuantityGiven,

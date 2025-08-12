@@ -13,6 +13,7 @@ interface Analytics {
     netProfitLoss: number;
     totalIncomeFromGiven: number;
     totalExpenseFromTaken: number;
+    monthlypnl: number;
   };
   goldSummary: {
     totalGoldQuantityGiven: number;
@@ -57,6 +58,11 @@ export default function ProfilePage() {
 
   const fetchData = async () => {
     try {
+      const ans=localStorage.getItem("dashboardAccess");
+      if (!ans) {
+        alert("Please login to access this page.");
+        window.location.href = '/';
+      }
       const [analyticsResponse, loansResponse] = await Promise.all([
         fetch('/api/analytics'),
         fetch('/api/loans')
@@ -75,9 +81,9 @@ export default function ProfilePage() {
   };
 
   const calculateLoanInterest = (loan: Loan) => {
-    const monthsElapsed = Math.floor(
+    const monthsElapsed = Math.abs(Math.floor(
       (Date.now() - new Date(loan.startDate).getTime()) / (1000 * 60 * 60 * 24 * 30)
-    );
+    ));
     const monthlyInterestRate = loan.interestRate / 100 / 12;
     return loan.principalAmount * monthlyInterestRate * monthsElapsed;
   };
@@ -142,7 +148,7 @@ export default function ProfilePage() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link
-                href="/"
+                href="/main"
                 className="mr-4 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors duration-200"
               >
                 <ArrowLeft size={20} />
@@ -168,7 +174,7 @@ export default function ProfilePage() {
                     <dl>
                       <dt className="text-sm font-medium text-gray-500 truncate">Total Income</dt>
                       <dd className="text-2xl font-bold text-green-600">
-                        ₹{analytics.summary.totalIncomeFromGiven.toLocaleString()}
+                        ₹{Math.abs(analytics.summary.totalIncomeFromGiven).toLocaleString()}
                       </dd>
                       <dd className="text-xs text-gray-400">From {analytics.summary.activeLoansGiven} active loans given</dd>
                     </dl>
@@ -188,7 +194,7 @@ export default function ProfilePage() {
                     <dl>
                       <dt className="text-sm font-medium text-gray-500 truncate">Total Expenses</dt>
                       <dd className="text-2xl font-bold text-red-600">
-                        ₹{analytics.summary.totalExpenseFromTaken.toLocaleString()}
+                        ₹{Math.abs(analytics.summary.totalExpenseFromTaken).toLocaleString()}
                       </dd>
                       <dd className="text-xs text-gray-400">From {analytics.summary.activeLoansTaken} active loans taken</dd>
                     </dl>
@@ -209,6 +215,30 @@ export default function ProfilePage() {
                       <dt className="text-sm font-medium text-gray-500 truncate">Net P&L</dt>
                       <dd className={`text-2xl font-bold ${analytics.summary.netProfitLoss >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                         ₹{Math.abs(analytics.summary.netProfitLoss).toLocaleString()}
+                      </dd>
+                      <dd className="text-xs text-gray-400">
+                        {analytics.summary.netProfitLoss >= 0 ? 'Profit' : 'Loss'} 
+                        {analytics.summary.totalIncomeFromGiven > 0 && 
+                          ` (${((Math.abs(analytics.summary.netProfitLoss) / analytics.summary.totalIncomeFromGiven) * 100).toFixed(1)}%)`
+                        }
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* Net monthlyP&L Card */}
+            <div className="bg-white overflow-hidden shadow-sm rounded-lg border border-gray-200">
+              <div className="p-6">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <DollarSign className={`h-8 w-8 ${analytics.summary.monthlypnl >= 0 ? 'text-green-400' : 'text-red-400'}`} />
+                  </div>
+                  <div className="ml-5 w-0 flex-1">
+                    <dl>
+                      <dt className="text-sm font-medium text-gray-500 truncate">Net P&L</dt>
+                      <dd className={`text-2xl font-bold ${analytics.summary.monthlypnl >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        ₹{Math.abs(analytics.summary.monthlypnl).toLocaleString()}
                       </dd>
                       <dd className="text-xs text-gray-400">
                         {analytics.summary.netProfitLoss >= 0 ? 'Profit' : 'Loss'} 
@@ -420,6 +450,10 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
+        <button
+          onClick={()=>{localStorage.removeItem("dashboardAccess"); window.location.href = '/';}}
+          className="mt-6 inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+        >logout</button>
       </main>
     </div>
   );

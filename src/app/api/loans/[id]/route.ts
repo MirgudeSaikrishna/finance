@@ -1,18 +1,19 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongodb';
 import Loan from '@/models/Loan';
 
-interface Params {
+interface RouteContext {
   params: { id: string };
 }
 
+// GET /api/loans/[id]
 export async function GET(
-  request: NextRequest,
-  { params }: Params
+  req: Request,
+  context: RouteContext
 ) {
   try {
     await connectToDatabase();
-    const loan = await Loan.findById(params.id);
+    const loan = await Loan.findById(context.params.id);
 
     if (!loan) {
       return NextResponse.json(
@@ -31,16 +32,17 @@ export async function GET(
   }
 }
 
+// PUT /api/loans/[id]
 export async function PUT(
-  request: NextRequest,
-  { params }: Params
+  req: Request,
+  context: RouteContext
 ) {
   try {
     await connectToDatabase();
-    const body = await request.json();
+    const body = await req.json();
 
     const loan = await Loan.findByIdAndUpdate(
-      params.id,
+      context.params.id,
       body,
       { new: true, runValidators: true }
     );
@@ -62,13 +64,14 @@ export async function PUT(
   }
 }
 
+// DELETE /api/loans/[id]
 export async function DELETE(
-  request: NextRequest,
-  { params }: Params
+  req: Request,
+  context: RouteContext
 ) {
   try {
     await connectToDatabase();
-    const loan = await Loan.findByIdAndDelete(params.id);
+    const loan = await Loan.findByIdAndDelete(context.params.id);
 
     if (!loan) {
       return NextResponse.json(

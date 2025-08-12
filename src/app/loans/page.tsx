@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Plus, Filter, Search, ArrowLeft } from 'lucide-react';
+import { Plus, Search, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import LoanForm from '@/components/LoanForm';
 import LoanCard from '@/components/LoanCard';

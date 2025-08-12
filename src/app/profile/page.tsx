@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Scale, Calendar, PieChart } from 'lucide-react';
+import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Scale, PieChart } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 

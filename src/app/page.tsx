@@ -27,7 +27,7 @@ export default function Dashboard() {
 
       setError("Incorrect password. Please try again.")
     } catch (err) {
-      setError("An error occurred. Please try again.")
+      setError("An error occurred. Please try again." +err)
     } finally {
       setIsLoading(false)
     }

@@ -19,7 +19,7 @@ export default function Dashboard() {
     try {
       await new Promise((resolve) => setTimeout(resolve, 800))
 
-      if (input === "omnamahshivaya") {
+      if (input === "omnamashivaya") {
         localStorage.setItem("dashboardAccess", "true")
         router.push("/main")
         return
@@ -55,7 +55,7 @@ export default function Dashboard() {
               <div className="relative">
                 <input
                   id="password"
-                  type={showPassword ? "text" : "password"}
+                  type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   required
@@ -63,14 +63,6 @@ export default function Dashboard() {
                   className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors pr-12"
                   aria-describedby={error ? "password-error" : undefined}
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
               </div>
             </div>
 

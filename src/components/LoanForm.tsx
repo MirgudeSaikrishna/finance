@@ -90,7 +90,6 @@ export default function LoanForm({ onSubmit, onCancel }: LoanFormProps) {
     }
 
     // Calculate months remaining
-    const start = new Date(formData.startDate);
     const end = new Date(formData.endDate);
     const monthsRemaining = Math.ceil((end.getTime() - Date.now()) / (1000 * 60 * 60 * 24 * 30));
 

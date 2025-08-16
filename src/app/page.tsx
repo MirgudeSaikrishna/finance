@@ -2,14 +2,13 @@
 import type React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Eye, EyeOff, Lock, AlertCircle } from "lucide-react"
+import { Lock, AlertCircle } from "lucide-react" // Removed Eye, EyeOff
 
 export default function Dashboard() {
   const router = useRouter()
   const [input, setInput] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false) // Removed showPassword, setShowPassword
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
